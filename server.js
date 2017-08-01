@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var app      = express();
 var port     = process.env.PORT || 8080;
+var host = '192.168.0.33';
 
 var passport = require('passport');
 
@@ -26,8 +27,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.set('view engine', 'ejs'); // set up ejs for templating
-
 // required for passport
 app.use(session({
 	secret: 'vidyapathaisalwaysrunning',
@@ -42,5 +41,5 @@ var connection = require('./config/databaseConnection');
 require('./app/routes.js')(app, passport, connection); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
-app.listen(port, '192.168.0.195');
-console.log('The magic happens on 192.168.0.195:' + port);
+app.listen(port, host);
+console.log('The magic happens on ' + host + ': ' + port);
