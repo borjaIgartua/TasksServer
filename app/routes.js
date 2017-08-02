@@ -118,8 +118,10 @@ module.exports = function(app, passport, connection) {
 		app.get('/tasks/:id', isLoggedIn, function(req, res) {
 			connection.executeQuery("SELECT * FROM tasks WHERE id = ?",[req.params.id], function(err, rows) {
 				if (err) { throw err; }
+				if (rows.length != 1) { return res.json({error: {code: 106, message: 'There is no task with the given ID'}}); }
 
-				return res.json(rows);
+				return res.json(rows[0]);
+
 			});
 		});
 
@@ -148,7 +150,7 @@ module.exports = function(app, passport, connection) {
 		connection.executeQuery("DELETE FROM tasks WHERE id = ?", [req.params.id], function(err, result) {
 			if (err) { throw err; }
 
-			if(result.affectedRows == 0) { return res.json({error: {code: 106, message: 'There is no tasks with the given ID'}}); }
+			if(result.affectedRows == 0) { return res.json({error: {code: 106, message: 'There is no task with the given ID'}}); }
 
 			return res.json( {data: {code: 200, message: 'tasks succesfully deleted'}} );
 		});
