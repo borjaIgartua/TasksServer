@@ -114,6 +114,15 @@ module.exports = function(app, passport, connection) {
 		});
     });
 
+		//retrieve the given task
+		app.get('/tasks/:id', isLoggedIn, function(req, res) {
+			connection.executeQuery("SELECT * FROM tasks WHERE id = ?",[req.params.id], function(err, rows) {
+				if (err) { throw err; }
+
+				return res.json(rows);
+			});
+		});
+
 	//register a new task for the logged user
     app.post('/tasks/register', isLoggedIn, function(req, res) {
 
@@ -173,7 +182,6 @@ function isLoggedIn(req, res, next) {
 		return next();
 	}
 
- console.log(res.headersSent);
 	// if they aren't
 	res.json({error: {code: 104, message: 'The user is not logged in'}});
 }
